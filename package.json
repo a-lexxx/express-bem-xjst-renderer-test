@@ -1,0 +1,21 @@
+{
+  "name": "bemder-test",
+  "version": "0.1.0",
+  "description": "BEM renDER plugin for Express",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "BEM",
+    "express",
+    "plugin"
+  ],
+  "author": "Ya",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.0",
+    "morgan": "^1.7.0"
+  }
+}
