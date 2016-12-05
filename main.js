@@ -3,49 +3,72 @@
 var express = require('express');
 var app = express();
 var morgan = require('morgan');
-// var router = require('./router');
 
-var bemder = require('bemder');
+var renderer = require('express-bem-xjst-renderer')({
+    debug: true,
+    precompileDir: 'views'
+});
 
 app
-	.disable('x-powered-by')
-	.set('views', './views')
-	.set('view engine', 'bemtree.js')	// "шаблонизатор по умолчанию" для того, чтобы
-	.engine('bemtree.js', bemder.render) // чтобы работало res.render('olo') без расширения файла
-	// .engine('bemhtml.js', bemder.render) // а вот так не работает
-	.engine('js', bemder.render);   // т.к. если указывать res.render('olo.bemhtml.js'),
-									// то express совершенно верно думает, что это файлы типа js
-									// поэтому нужно регистрировать именно такое расширение 
+    .set('views', './views')
+    .set('view engine', 'bemtree.js')       // define default "render plugin" with file extension "bemtree.js"
+                                            // to use res.render('olo') without file extension
+    .engine('bemtree.js', renderer)    // register renderer plugin itself
+    // .engine('bemhtml.js', renderer) // <- useless because express use file extension to routing (and here "js" is a file extension)
+    .engine('js', renderer);           // you have to use "js" as extension to render bemhtml files like
+                                            //          res.render('olo.bemhtml.js'),
+                                            // this concerned to express behavior with file extensions and render engines
+
+
+app.use(morgan('dev'));
+
 
 var data = require('./data.json');
 
-app.get('/', function(req, res, next){
-	res.render('some.bemhtml.js', {page: data});
-})
+app.locals.block = 'root';
 
-app.get('/1', function(req, res, next){
-	res.render('some', {page: data[1]});
-})
+app.get('/', function(req, res, next) {     // eslint-disable-line no-unused-vars
+    res.render('example',                   // here example.bemtree.js and example.bemhtml.js will be used to render
+        {
+            page: data,
+            block: 'root'
+        }
+    );
+});
 
-app.get('/2', function(req, res, next){
-	res.render('some', {page: data[2]});
-})
+app.get('/user2', function(req, res, next) {    // eslint-disable-line no-unused-vars
+    res.render('example', {page: data[1]});
+});
 
-app.get('*', function(r, rr, n){
-	rr.status(404).send('Что-то потеряли? :(');
-})
+
+var dataExample2 = ([
+    { block: 'link', content: 'Some link'},
+    { tag: 'br' },
+    { block: 'link', url: '/', content: 'Here link', url: '/bemhtml' },
+    { tag: 'br' },
+    { block: 'link', target: '_blank', url: '/', content: 'Link to blank' },
+    { tag: 'br' },
+    { block: 'link', mods: { disabled: true }, url: '/', content: 'Link to site root' }
+]);
+app.get('/bemhtml', function(req, res, next) {    // eslint-disable-line no-unused-vars
+    res.render('example2.bemhtml.js',           // if you are using bemhtml only (i.e. file example2.bemtree.js don't exist)
+        {bemjson: dataExample2}                 //  then you should set bemjson explicitly in your data
+    );
+});
+
+app.get('*', function(req, res, next) {     // eslint-disable-line no-unused-vars
+    res.status(404).send('Something lost? :(');
+});
 
 app.use(errorHandler);
 
- /*eslint-disable no-unused-vars */
-function errorHandler(err, req, res, next) {
-	console.log('Error ocurred: ', err);
-	res.status(500).json({status: 'Application error, try later'});
+function errorHandler(err, req, res, next) {    // eslint-disable-line no-unused-vars
+    console.log('Error ocurred: ', err);
+    res.status(500).json({status: 'Application error, please, try again later'});
 }
-/*eslint-enable no-alert */
 
-app.listen(8080, function () {
-	console.log('listening at %s:%s', 'localhost', 8080);
+app.listen(8080, function() {
+    console.log('listening at %s:%s', 'localhost', 8080);
 });
 
 module.exports.app = app;

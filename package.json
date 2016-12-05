@@ -1,7 +1,7 @@
 {
-  "name": "bemder-test",
+  "name": "express-bem-xjst-renderer-test",
   "version": "0.1.0",
-  "description": "BEM renDER plugin for Express",
+  "description": "Test project for bemxjst render plugin for Express",
   "main": "main.js",
   "scripts": {
     "start": "node main.js",
@@ -16,6 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.14.0",
+    "express-bem-xjst-renderer": "git+https://github.com/stochastical/express-bem-xjst-renderer.git",
     "morgan": "^1.7.0"
   }
 }

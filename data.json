@@ -1,17 +1,17 @@
 [
-	{
-		"user": "A",
-		"age": 16,
-		"money": 123
-	},
-	{
-		"user": "B",
-		"age": 26,
-		"money": 1231
-	},
-	{
-		"user": "C",
-		"age": 56,
-		"money": 12323
-	}
+    {
+        "user": "A",
+        "age": 16,
+        "money": 123
+    },
+    {
+        "user": "B",
+        "age": 26,
+        "money": 1231
+    },
+    {
+        "user": "C",
+        "age": 56,
+        "money": 12323
+    }
 ]
